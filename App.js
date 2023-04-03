@@ -1,42 +1,50 @@
-import * as Font from "expo-font";
-import * as SplashScreen from 'expo-splash-screen';
-import { Text, View } from "react-native";
-import { useEffect, useCallback } from "react";
+import React from "react";
+import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 
-export default function App() {
-  const [fontsLoaded] = Font.useFonts({
-    "Inter-Black": require("./assets/fonts/Inter-Black.otf"),
-    "Inter-SemiBoldItalic":
-      "https://rsms.me/inter/font-files/Inter-SemiBoldItalic.otf?v=3.12",
-  });
+import EmojiSelector, { Categories } from "react-native-emoji-selector";
+const THEME = "#007AFF";
 
-  useEffect(() => {
-    async function prepare() {
-      await SplashScreen.preventAutoHideAsync();
-    }
-
-    prepare();
-  }, []);
-
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
-
-  if (!fontsLoaded) {
-    return null;
+export default class App extends React.Component {
+  state = {
+    emoji: " "
+  };
+  render() {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text>Please select the emoji you would like to use</Text>
+        <View style={styles.display}>
+          <Text style={{ fontSize: 64, backgroundColor: "transparent" }}>
+            {this.state.emoji}
+          </Text>
+        </View>
+        <EmojiSelector
+          onEmojiSelected={emoji => this.setState({ emoji })}
+          showSearchBar={true}
+          showTabs={true}
+          showHistory={true}
+          showSectionTitles={true}
+          category={Categories.all}
+        />
+      </SafeAreaView>
+    );
   }
-
-  return (
-    <View 
-      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-      onLayout={onLayoutRootView}>
-      <Text>Platform Default</Text>
-      <Text style={{ fontFamily: "Inter-Black" }}>Inter Black</Text>
-      <Text style={{ fontFamily: "Inter-SemiBoldItalic" }}>
-        Inter SemiBoldItalic
-      </Text>
-    </View>
-  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  display: {
+    width: 96,
+    height: 96,
+    margin: 24,
+    borderWidth: 2,
+    borderRadius: 12,
+    borderColor: THEME,
+    alignItems: "center",
+    justifyContent: "center"
+  }
+});
